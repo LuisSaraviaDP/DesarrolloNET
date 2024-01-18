@@ -1,0 +1,52 @@
+﻿/* Estilo minimalista y responsivo */
+.filter-container {
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+input, select, button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.pagination-container {
+    margin-top: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+/* Estilos para dispositivos pequeños */
+@media screen and (max-width: 600px) {
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}

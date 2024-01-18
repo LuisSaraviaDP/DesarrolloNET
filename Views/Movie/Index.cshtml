@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@model X.PagedList.IPagedList<MovieModel>
+@using X.PagedList.Mvc.Core
+@using EvaTecMVC.Helpers
+
+@if (User.Identity.IsAuthenticated)
+{
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Películas</title>
+    <link rel="stylesheet" type="text/css" href="~/css/styles.css">
+</head>
+<body>
+    <div class="filter-container">
+        @using (Html.BeginForm("Index", "Movie", FormMethod.Get))
+        {
+            <div class="filter-group">
+                <label for="genreFilter">Categoría:</label>
+                <select name="genreFilter" id="genreFilter">
+                    <option value="">Todos</option>
+                    <option value="@((int)Genre.Action)">Action</option>
+                    <option value="@((int)Genre.Adventure)">Adventure</option>
+                    <option value="@((int)Genre.Animation)">Animation</option>
+                    <option value="@((int)Genre.Comedy)">Comedy</option>
+                    <option value="@((int)Genre.Crime)">Crime</option>
+                    <option value="@((int)Genre.Documentary)">Documentary</option>
+                    <option value="@((int)Genre.Drama)">Drama</option>
+                    <option value="@((int)Genre.Family)">Family</option>
+                    <option value="@((int)Genre.Fantasy)">Fantasy</option>
+                    <option value="@((int)Genre.History)">History</option>
+                    <option value="@((int)Genre.Horror)">Horror</option>
+                    <option value="@((int)Genre.Music)">Music</option>
+                    <option value="@((int)Genre.Mystery)">Mystery</option>
+                    <option value="@((int)Genre.Romance)">Romance</option>
+                    <option value="@((int)Genre.ScienceFiction)">Science Fiction</option>
+                    <option value="@((int)Genre.TVMovie)">TV Movie</option>
+                    <option value="@((int)Genre.Thriller)">Thriller</option>
+                    <option value="@((int)Genre.War)">War</option>
+                    <option value="@((int)Genre.Western)">Western</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="titleFilter">Título:</label>
+                <input type="text" name="titleFilter" id="titleFilter" placeholder="Filtrar por título" value="@ViewBag.CurrentTitleFilter" />
+            </div>
+
+            <div class="filter-group">
+                <label for="overviewFilter">Descripción:</label>
+                <input type="text" name="overviewFilter" id="overviewFilter" placeholder="Filtrar por descripción" value="@ViewBag.CurrentOverviewFilter" />
+            </div>
+
+            <button type="submit">Filtrar</button>
+        }
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Fecha de lanzamiento</th>
+                <th>Descripción</th>
+                <th>Popularidad</th>
+                <th>Géneros</th>
+                <th>ID</th>
+                <th>Idioma original</th>
+                <th>Calificación promedio</th>
+                <th>Conteo de votos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var movie in Model)
+            {
+                <tr>
+                    <td>@(movie.Title ?? "N/A")</td>
+                    <td>@(movie.ReleaseDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                    <td>@(movie.Overview ?? "N/A")</td>
+                    <td>@(movie.Popularity)</td>
+                    <td>
+                        @(movie.GenreIds != null ? string.Join(", ", movie.GenreIds.Select(g => EnumHelper.GetGenreName(g))) : "N/A")
+                    </td>
+                    <td>@(movie.Id)</td>
+                    <td>@(movie.OriginalLanguage ?? "N/A")</td>
+                    <td>@string.Format("{0:F1}", movie.VoteAverage)</td>
+                    <td>@(movie.VoteCount)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", new { page = 1, genreFilter = ViewBag.CurrentGenreFilter, titleFilter = ViewBag.CurrentTitleFilter, overviewFilter = ViewBag.CurrentOverviewFilter })">Primera</a>
+            <span> | </span>
+            <a href="@Url.Action("Index", new { page = Model.PageNumber - 1, genreFilter = ViewBag.CurrentGenreFilter, titleFilter = ViewBag.CurrentTitleFilter, overviewFilter = ViewBag.CurrentOverviewFilter })">Anterior</a>
+        }
+        else
+        {
+            @:Primera | Anterior
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageNumber + 1, genreFilter = ViewBag.CurrentGenreFilter, titleFilter = ViewBag.CurrentTitleFilter, overviewFilter = ViewBag.CurrentOverviewFilter })">Siguiente</a>
+            <span> | </span>
+            <a href="@Url.Action("Index", new { page = Model.PageCount, genreFilter = ViewBag.CurrentGenreFilter, titleFilter = ViewBag.CurrentTitleFilter, overviewFilter = ViewBag.CurrentOverviewFilter })">Última</a>
+        }
+        else
+        {
+            @:Siguiente | Última
+        }
+    </div>
+
+</body>
+</html>
+}
+else
+{
+    <p>Debes iniciar sesión para ver este contenido.</p>
+}
